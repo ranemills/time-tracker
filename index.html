@@ -3,10 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="scripts/app.js"></script>
+    <link type="text/css" rel="stylesheet" href="dist/third-party.css">
+    <script type="application/javascript" src="dist/third-party.js"></script>
+    <script src="dist/app.js"></script>
 </head>
 <body ng-app="timeTrackerApp">
-    Hello World
+<div class="container">
+    <div class="card card-block">
+        <div class="row">
+            <div class="col col-xs-12 text-xs-center">
+                <span><button class="btn btn-primary btn-lg">Start</button></span>
+                <span class="align-middle" style="font-size: x-large">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-block">
+        <div class="row">
+            <div class="col-xs-12">
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <td>Date</td>
+                        <td>Start time</td>
+                        <td>Finish time</td>
+                        <td>Duration</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>25/02/2017</td>
+                        <td>11:01am</td>
+                        <td>11:26am</td>
+                        <td>00:25</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
