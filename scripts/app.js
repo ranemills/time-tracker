@@ -1,27 +1,24 @@
-angular.module('timeTrackerApp', ['angularMoment'])
-.controller('timerCtrl', function($scope, $interval, moment) {
+angular.module('timeTrackerApp', ['angularMoment', 'timer'])
+.controller('mainCtrl', function ($scope) {
 
-  $scope.time = moment();
-  $scope.isTiming = false;
-
-  function setTimeAgo() {
-    $scope.timeAgo = moment.utc(moment().diff($scope.startTime));
-  }
-
-
-  $scope.start = function() {
-    $scope.startTime = moment();
-    $scope.isTiming = true;
-
-    $scope.interval = $interval(setTimeAgo, 1000);
-  };
-
-  $scope.stop = function() {
-    $scope.duration = moment().diff($scope.startTime);
-    console.log($scope.duration);
-    $interval.cancel($scope.interval);
-
+})
+.component('timerComponent', {
+  templateUrl: 'components/timer.html',
+  controller: function ($scope) {
     $scope.isTiming = false;
-  }
 
+    $scope.start = function () {
+      $scope.$broadcast('timer-start');
+      $scope.isTiming = true;
+    };
+
+    $scope.stop = function () {
+      $scope.$broadcast('timer-stop');
+      $scope.isTiming = false;
+    };
+
+    $scope.$on('timer-stopped', function (event, data) {
+      console.log('Timer Stopped - data = ', data);
+    });
+  }
 });

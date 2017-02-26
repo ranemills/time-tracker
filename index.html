@@ -8,19 +8,9 @@
     <script src="dist/app.js"></script>
 </head>
 <body ng-app="timeTrackerApp">
-<div class="container">
-    <div class="card card-block" ng-controller="timerCtrl">
-        <div class="row">
-            <div class="col col-xs-12 text-xs-center" ng-if="!isTiming">
-                <span><button class="btn btn-primary btn-lg" ng-click="start()">Start</button></span>
-                <span class="align-middle" style="font-size: x-large">00:00:00</span>
-            </div>
-            <div class="col col-xs-12 text-xs-center" ng-if="isTiming">
-                <span><button class="btn btn-primary btn-lg" ng-click="stop()" ng-if="isTiming">Stop</button></span>
-                <span class="align-middle" style="font-size: x-large">{{ timeAgo | amDateFormat:'HH:mm:ss' }}</span>
-            </div>
-        </div>
-    </div>
+<div class="container" ng-controller="mainCtrl">
+
+    <timer-component></timer-component>
 
     <div class="card card-block">
         <div class="row">
