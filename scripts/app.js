@@ -1,4 +1,4 @@
-angular.module('timeTrackerApp', ['angularMoment', 'timer'])
+angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 .controller('mainCtrl', function (recordService) {
 
   this.$onInit = function() {
@@ -7,12 +7,12 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
 
   this.recordTime = function(startTime, endTime) {
     recordService.addRecord({startTime, endTime, duration: endTime.diff(startTime)});
-    console.log("Records " + recordService.getRecords() );
   };
 
   this.getRecords = recordService.getRecords;
 
 })
+.constant('_', window._)
 .service('recordService', function() {
 
   // Record format: { startDate, endDate, duration }
@@ -32,13 +32,58 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
     addRecord
   }
 })
+.component('charts', {
+  templateUrl: 'components/charts.html',
+  bindings: {
+    records: '<'
+  },
+  controllerAs: 'chartsCtrl',
+  controller: function() {
+
+  }
+})
+.component('durationsChart', {
+  templateUrl: 'components/durations-chart.html',
+  bindings: {
+    records: '<'
+  },
+  controllerAs: 'durationsChartCtrl',
+  controller: function() {
+
+  }
+})
+.component('timeChart', {
+  templateUrl: 'components/time-chart.html',
+  bindings: {
+    records: '<'
+  },
+  controllerAs: 'timeChartCtrl',
+  controller: function($scope, _) {
+    let timeChartCtrl = this;
+
+    timeChartCtrl.$onInit = function() {
+      timeChartCtrl.labels = ['All'];
+    };
+
+    timeChartCtrl.chartData = function() {
+      if(!angular.equals(timeChartCtrl.records, timeChartCtrl.cachedRecords))
+      {
+        timeChartCtrl.cachedRecords = _.clone(timeChartCtrl.records);
+        timeChartCtrl.cachedData = [_.reduce(timeChartCtrl.records, (sum, record) => {
+          return sum + record.duration
+        }, 0)];
+      }
+      return timeChartCtrl.cachedData;
+    }
+  }
+})
 .component('recordTable', {
   templateUrl: 'components/records-table.html',
   bindings: {
     records: '<'
   },
   controllerAs: 'recordTableCtrl',
-  controller: function(recordService) {
+  controller: function() {
     this.getRecords = () => this.records;
   }
 })
@@ -68,8 +113,6 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
 
     // Once we know that the timer has stopped, we can do stuff with it
     $scope.$on('timer-stopped', angular.bind(this, function (event, data) {
-      console.log('Timer Stopped - data = ', data);
-
       this.endTime = moment();
       this.isTiming = false;
       this.onStop({startTime: this.startTime, endTime: this.endTime});
