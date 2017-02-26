@@ -63,6 +63,9 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 
     timeChartCtrl.$onInit = function() {
       timeChartCtrl.labels = ['All'];
+      timeChartCtrl.options = {
+
+      };
     };
 
     timeChartCtrl.chartData = function() {
@@ -70,7 +73,7 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
       {
         timeChartCtrl.cachedRecords = _.clone(timeChartCtrl.records);
         timeChartCtrl.cachedData = [_.reduce(timeChartCtrl.records, (sum, record) => {
-          return sum + record.duration
+          return sum + record.duration/1000
         }, 0)];
       }
       return timeChartCtrl.cachedData;
