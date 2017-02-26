@@ -1,12 +1,19 @@
 <div class="card card-block">
     <div class="row">
-        <div class="col col-xs-12 text-xs-center" ng-if="!isTiming">
-            <span><button class="btn btn-primary btn-lg" ng-click="start()">Start</button></span>
-            <span class="align-middle" style="font-size: x-large">00:00:00</span>
-        </div>
-        <div class="col col-xs-12 text-xs-center" ng-if="isTiming">
-            <span><button class="btn btn-primary btn-lg" ng-click="stop()" ng-if="isTiming">Stop</button></span>
-            <span class="align-middle" style="font-size: x-large"><timer interval="1000">{{hhours}}:{{mminutes}}:{{sseconds}}</timer></span>
+        <div class="col col-xs-12 text-xs-center">
+            <span>
+                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.start()" ng-if="!timerCtrl.isTiming">
+                    Start
+                </button>
+            </span>
+            <span>
+                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.stop()" ng-if="timerCtrl.isTiming">
+                    Stop
+                </button>
+            </span>
+            <span class="align-middle" style="font-size: x-large">
+                <timer interval="1000" autostart="false">{{hhours}}:{{mminutes}}:{{sseconds}}</timer>
+            </span>
         </div>
     </div>
 </div>

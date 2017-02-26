@@ -4,17 +4,24 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
 })
 .component('timerComponent', {
   templateUrl: 'components/timer.html',
+  bindings: {
+    onStop: '&'
+  },
+  controllerAs: 'timerCtrl',
   controller: function ($scope) {
-    $scope.isTiming = false;
 
-    $scope.start = function () {
-      $scope.$broadcast('timer-start');
-      $scope.isTiming = true;
+    this.$onInit = function() {
+      this.isTiming = false;
     };
 
-    $scope.stop = function () {
+    this.start = function () {
+      $scope.$broadcast('timer-start');
+      this.isTiming = true;
+    };
+
+    this.stop = function () {
       $scope.$broadcast('timer-stop');
-      $scope.isTiming = false;
+      this.isTiming = false;
     };
 
     $scope.$on('timer-stopped', function (event, data) {
