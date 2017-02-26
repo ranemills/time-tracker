@@ -8,9 +8,9 @@
     <script src="dist/app.js"></script>
 </head>
 <body ng-app="timeTrackerApp">
-<div class="container" ng-controller="mainCtrl">
+<div class="container" ng-controller="mainCtrl as mainCtrl">
 
-    <timer-component></timer-component>
+    <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>
 
     <div class="card card-block">
         <div class="row">
@@ -18,18 +18,16 @@
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
-                        <td>Date</td>
                         <td>Start time</td>
                         <td>Finish time</td>
                         <td>Duration</td>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>25/02/2017</td>
-                        <td>11:01am</td>
-                        <td>11:26am</td>
-                        <td>00:25</td>
+                    <tr ng-repeat="record in mainCtrl.getRecords()">
+                        <td>{{record.startTime | amDateFormat:'L LTS'}}</td>
+                        <td>{{record.endTime | amDateFormat:'L LTS'}}</td>
+                        <td>{{record.duration | amDateFormat:'HH:mm:ss'}}</td>
                     </tr>
                     </tbody>
                 </table>
