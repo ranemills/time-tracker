@@ -12,7 +12,6 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
 
   this.getRecords = recordService.getRecords;
 
-
 })
 .service('recordService', function() {
 
@@ -31,6 +30,16 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer'])
   return {
     getRecords,
     addRecord
+  }
+})
+.component('recordTable', {
+  templateUrl: 'components/records-table.html',
+  bindings: {
+    records: '<'
+  },
+  controllerAs: 'recordTableCtrl',
+  controller: function(recordService) {
+    this.getRecords = () => this.records;
   }
 })
 .component('timerComponent', {
