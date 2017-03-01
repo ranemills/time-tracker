@@ -10,11 +10,37 @@
 <body ng-app="timeTrackerApp">
 <div class="container" ng-controller="mainCtrl as mainCtrl">
 
-    <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>
+    <div class="card">
+        <div class="card-header">
+            Record an Activity
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-xs-6">
+                    <button class="btn btn-sm mr-1"
+                            ng-repeat="activity in mainCtrl.definedActivities"
+                            ng-class="{'btn-primary': mainCtrl.activity === activity,
+                                        'btn-outline-primary': mainCtrl.activity !== activity}"
+                            ng-click="mainCtrl.setActivity(activity)">
+                        {{activity}}
+                    </button>
+                </div>
+                <div class="col-xs-6">
+                    <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <charts records="mainCtrl.getRecords()"></charts>
-
-    <record-table records="mainCtrl.getRecords()"></record-table>
+    <div class="card">
+        <div class="card-header">
+            Saved Activities
+        </div>
+        <div class="card-block">
+            <charts records="mainCtrl.getRecords()"></charts>
+            <record-table records="mainCtrl.getRecords()"></record-table>
+        </div>
+    </div>
 
 </div>
 </body>

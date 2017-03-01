@@ -2,11 +2,16 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 .controller('mainCtrl', function (recordService) {
 
   this.$onInit = function() {
+    this.definedActivities = ['Default', 'PR Review', 'Coding', 'Talking'];
+    this.activity = 'PR Review';
+  };
 
+  this.setActivity = function(activity) {
+    this.activity = activity;
   };
 
   this.recordTime = function(startTime, endTime) {
-    recordService.addRecord({startTime, endTime, duration: endTime.diff(startTime)});
+    recordService.addRecord({startTime, endTime, duration: endTime.diff(startTime), activity: this.activity});
   };
 
   this.getRecords = recordService.getRecords;
@@ -15,7 +20,7 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 .constant('_', window._)
 .service('recordService', function() {
 
-  // Record format: { startDate, endDate, duration }
+  // Record format: { startDate, endDate, duration, activity }
 
   let records = [];
 
@@ -63,18 +68,24 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 
     timeChartCtrl.$onInit = function() {
       timeChartCtrl.labels = ['All'];
-      timeChartCtrl.options = {
-
-      };
     };
 
     timeChartCtrl.chartData = function() {
       if(!angular.equals(timeChartCtrl.records, timeChartCtrl.cachedRecords))
       {
         timeChartCtrl.cachedRecords = _.clone(timeChartCtrl.records);
-        timeChartCtrl.cachedData = [_.reduce(timeChartCtrl.records, (sum, record) => {
-          return sum + record.duration/1000
-        }, 0)];
+
+        let data = _.transform(timeChartCtrl.records, function(result, record) {
+          result[record.activity] = _.get(result, record.activity, 0) + record.duration/1000;
+        }, {});
+
+        if(_.size(data) !== 0) {
+          timeChartCtrl.labels = _.keys(data);
+          timeChartCtrl.cachedData =  _.values(data);
+        } else {
+          timeChartCtrl.labels = ['N/A'];
+          timeChartCtrl.cachedData = [0];
+        }
       }
       return timeChartCtrl.cachedData;
     }
