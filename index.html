@@ -17,10 +17,7 @@
         <div class="card-block">
             <div class="row">
                 <div class="col-xs-6">
-                    <activity-selector on-select="mainCtrl.setActivity(activity)"
-                                       activities="mainCtrl.definedActivities"
-                                       default-activity="mainCtrl.definedActivities[0]">
-                    </activity-selector>
+                    <activity-selector></activity-selector>
                 </div>
                 <div class="col-xs-6">
                     <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>

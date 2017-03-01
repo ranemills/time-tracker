@@ -1,23 +1,46 @@
 angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
-.controller('mainCtrl', function (recordService) {
+.controller('mainCtrl', function (recordService, activityService) {
 
   this.$onInit = function() {
-    this.definedActivities = ['Default', 'PR Review', 'Coding', 'Talking'];
-    this.activity = 'PR Review';
-  };
-
-  this.setActivity = function(activity) {
-    this.activity = activity;
+    _.each(['Default', 'PR Review', 'Coding', 'Talking'], (activity) => activityService.addDefinedActivity(activity));
   };
 
   this.recordTime = function(startTime, endTime) {
-    recordService.addRecord({startTime, endTime, duration: endTime.diff(startTime), activity: this.activity});
+    recordService.addRecord({startTime, endTime, duration: endTime.diff(startTime), activity: activityService.getSelectedActivity()});
   };
 
   this.getRecords = recordService.getRecords;
 
 })
 .constant('_', window._)
+.service('activityService', function() {
+
+  let selectedActivity = '';
+  let definedActivities = [];
+
+  function getSelectedActivity() {
+    return selectedActivity;
+  }
+
+  function setSelectedActivity(activity) {
+    selectedActivity = activity;
+  }
+
+  function getDefinedActivities() {
+    return definedActivities;
+  }
+
+  function addDefinedActivity(activity) {
+    definedActivities.push(activity);
+  }
+
+  return {
+    getSelectedActivity,
+    setSelectedActivity,
+    getDefinedActivities,
+    addDefinedActivity
+  }
+})
 .service('recordService', function() {
 
   // Record format: { startDate, endDate, duration, activity }
@@ -49,22 +72,23 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 })
 .component('activitySelector', {
   templateUrl: 'components/activity-selector.html',
-  bindings: {
-    onSelect: '&',
-    activities: '<',
-    defaultActivity: '<'
-  },
+  bindings: {},
   controllerAs: 'activitySelectorCtrl',
-  controller: function() {
+  controller: function(activityService) {
     let activitySelectorCtrl = this;
 
     activitySelectorCtrl.$onInit = function() {
-      this.changeActivity(this.defaultActivity);
+      activitySelectorCtrl.changeActivity(activitySelectorCtrl.getActivities()[0]);
+    };
+
+    activitySelectorCtrl.getActivities = activityService.getDefinedActivities;
+
+    activitySelectorCtrl.getButtonStyle  = function(activity) {
+      return activity === activityService.getSelectedActivity() ? 'btn-primary' : 'btn-outline-primary';
     };
 
     activitySelectorCtrl.changeActivity = function(activity) {
-      this.selectedActivity = activity;
-      this.onSelect({activity});
+      activityService.setSelectedActivity(activity);
     };
   }
 })
