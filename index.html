@@ -17,13 +17,10 @@
         <div class="card-block">
             <div class="row">
                 <div class="col-xs-6">
-                    <button class="btn btn-sm mr-1"
-                            ng-repeat="activity in mainCtrl.definedActivities"
-                            ng-class="{'btn-primary': mainCtrl.activity === activity,
-                                        'btn-outline-primary': mainCtrl.activity !== activity}"
-                            ng-click="mainCtrl.setActivity(activity)">
-                        {{activity}}
-                    </button>
+                    <activity-selector on-select="mainCtrl.setActivity(activity)"
+                                       activities="mainCtrl.definedActivities"
+                                       default-activity="mainCtrl.definedActivities[0]">
+                    </activity-selector>
                 </div>
                 <div class="col-xs-6">
                     <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>

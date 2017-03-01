@@ -47,6 +47,27 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 
   }
 })
+.component('activitySelector', {
+  templateUrl: 'components/activity-selector.html',
+  bindings: {
+    onSelect: '&',
+    activities: '<',
+    defaultActivity: '<'
+  },
+  controllerAs: 'activitySelectorCtrl',
+  controller: function() {
+    let activitySelectorCtrl = this;
+
+    activitySelectorCtrl.$onInit = function() {
+      this.changeActivity(this.defaultActivity);
+    };
+
+    activitySelectorCtrl.changeActivity = function(activity) {
+      this.selectedActivity = activity;
+      this.onSelect({activity});
+    };
+  }
+})
 .component('durationsChart', {
   templateUrl: 'components/durations-chart.html',
   bindings: {
@@ -68,6 +89,16 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 
     timeChartCtrl.$onInit = function() {
       timeChartCtrl.labels = ['All'];
+      timeChartCtrl.options = {
+        scales: {
+          yAxes: [{
+            display: true,
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
     };
 
     timeChartCtrl.chartData = function() {
