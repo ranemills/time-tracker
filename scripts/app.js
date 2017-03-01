@@ -68,14 +68,38 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
     };
   }
 })
-.component('durationsChart', {
-  templateUrl: 'components/durations-chart.html',
+.component('timePieChart', {
+  templateUrl: 'components/time-pie-chart.html',
   bindings: {
     records: '<'
   },
-  controllerAs: 'durationsChartCtrl',
+  controllerAs: 'timePieChartCtrl',
   controller: function() {
+    let timePieChartCtrl = this;
 
+    timePieChartCtrl.$onInit = function() {
+      timePieChartCtrl.labels = ['All'];
+    };
+
+    timePieChartCtrl.chartData = function() {
+      if(!angular.equals(timePieChartCtrl.records, timePieChartCtrl.cachedRecords))
+      {
+        timePieChartCtrl.cachedRecords = _.clone(timePieChartCtrl.records);
+
+        let data = _.transform(timePieChartCtrl.records, function(result, record) {
+          result[record.activity] = _.get(result, record.activity, 0) + record.duration/1000;
+        }, {});
+
+        if(_.size(data) !== 0) {
+          timePieChartCtrl.labels = _.keys(data);
+          timePieChartCtrl.cachedData =  _.values(data);
+        } else {
+          timePieChartCtrl.labels = ['N/A'];
+          timePieChartCtrl.cachedData = [0];
+        }
+      }
+      return timePieChartCtrl.cachedData;
+    }
   }
 })
 .component('timeChart', {
