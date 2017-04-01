@@ -5,6 +5,7 @@ module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
   grunt.initConfig({
     concat: {
@@ -38,8 +39,16 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'dist/app.js': 'scripts/app.js'
+          'dist/app.js': 'src/scripts/app.js'
         }
+      }
+    },
+    copy: {
+      html: {
+        expand: true,
+        cwd: 'src/html',
+        src: '**',
+        dest: 'dist/'
       }
     },
     watch: {
@@ -59,7 +68,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('default', ['babel', 'concat:js', 'concat:css']);
+  grunt.registerTask('default', ['babel', 'concat:js', 'concat:css', 'copy:html']);
   grunt.registerTask('serve', ['default', 'watch']);
 
 };
