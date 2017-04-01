@@ -1,0 +1,29 @@
+<div class="card card-block">
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <td>Activity</td>
+                    <td>Start time</td>
+                    <td>Finish time</td>
+                    <td>Duration</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="record in recordTableCtrl.getRecords()">
+                    <td>{{record.activity }}</td>
+                    <td>{{record.startTime | amDateFormat:'L LTS'}}</td>
+                    <td>{{record.endTime | amDateFormat:'L LTS'}}</td>
+                    <td>{{record.duration | amDateFormat:'HH:mm:ss'}}</td>
+                </tr>
+                <tr ng-if="recordTableCtrl.getRecords().length === 0">
+                    <td colspan="3" class="text-xs-center">
+                        No Records
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

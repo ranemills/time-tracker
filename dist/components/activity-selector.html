@@ -1,0 +1,6 @@
+<button class="btn btn-sm mr-1"
+        ng-repeat="activity in activitySelectorCtrl.getActivities()"
+        ng-class="activitySelectorCtrl.getButtonStyle(activity)"
+        ng-click="activitySelectorCtrl.changeActivity(activity)">
+    {{activity}}
+</button>
