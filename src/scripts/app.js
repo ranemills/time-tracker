@@ -79,17 +79,24 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
 
     activitySelectorCtrl.$onInit = function() {
       activitySelectorCtrl.changeActivity(activitySelectorCtrl.getActivities()[0]);
+      activitySelectorCtrl.newActivityName = '';
     };
 
     activitySelectorCtrl.getActivities = activityService.getDefinedActivities;
 
     activitySelectorCtrl.getButtonStyle  = function(activity) {
-      return activity === activityService.getSelectedActivity() ? 'btn-primary' : 'btn-outline-primary';
+      return activity === activityService.getSelectedActivity() ? 'active' : '';
     };
 
     activitySelectorCtrl.changeActivity = function(activity) {
       activityService.setSelectedActivity(activity);
     };
+
+    activitySelectorCtrl.addActivity = function() {
+      activityService.addDefinedActivity(activitySelectorCtrl.newActivityName);
+      activityService.setSelectedActivity(activitySelectorCtrl.newActivityName);
+      activitySelectorCtrl.newActivityName = '';
+    }
   }
 })
 .component('timePieChart', {
