@@ -1,9 +1,41 @@
-<button class="btn btn-sm mr-1"
-        ng-repeat="activity in activitySelectorCtrl.getActivities()"
-        ng-class="activitySelectorCtrl.getButtonStyle(activity)"
-        ng-click="activitySelectorCtrl.changeActivity(activity)">
-    {{activity}}
-</button>
-<button class="btn btn-sm mr-1">
-    Add Activity
-</button>
+<style>
+    .input-group-flush .input-group-addon {
+        border-radius:0;
+        border-left: 0;
+        border-bottom: 0;
+    }
+    .input-group-flush .input-group-btn .btn {
+        border-radius:0;
+        border-right: 0;
+        border-bottom: 0;
+    }
+    .input-group-flush input {
+        border-radius:0;
+        border-bottom: 0;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header">
+        Select an activity
+    </div>
+    <div class="card-block ">
+        <div class="btn-toolbar flex-wrap justify-content-center    " data-toggle="buttons">
+            <label class="btn btn-secondary flex-unordered m-1"
+                   ng-repeat="activity in activitySelectorCtrl.getActivities()"
+                   ng-class="activitySelectorCtrl.getButtonStyle(activity)"
+                   ng-click="activitySelectorCtrl.changeActivity(activity)">
+                <input type="radio" name="options">
+                {{ activity }}
+            </label>
+        </div>
+    </div>
+    <div class="input-group input-group-flush">
+
+            <span class="input-group-addon" id="new-activity">New activity:</span>
+            <input type="text" class="form-control" ng-model="activitySelectorCtrl.newActivityName">
+            <span class="input-group-btn" id="add-new-activity">
+            <button class="btn btn-secondary" type="button" ng-click="activitySelectorCtrl.addActivity()">Add</button>
+        </span>
+    </div>
+</div>
