@@ -53,14 +53,14 @@ module.exports = function (grunt) {
     },
     watch: {
       scripts: {
-        files: ['scripts/app.js'],
+        files: ['src/scripts/app.js'],
         tasks: ['babel'],
         options: {
           livereload: true
         }
       },
       html: {
-        files: ['html/**/*.html', 'index.html'],
+        files: ['src/html/**/*.html', 'src/html/index.html'],
         options: {
           livereload: true
         }
