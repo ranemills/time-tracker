@@ -61,6 +61,7 @@ module.exports = function (grunt) {
       },
       html: {
         files: ['src/html/**/*.html', 'src/html/index.html'],
+        tasks: ['copy:html'],
         options: {
           livereload: true
         }
