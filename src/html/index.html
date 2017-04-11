@@ -21,7 +21,14 @@
                     <activity-selector></activity-selector>
                 </div>
                 <div class="col-6">
-                    <timer-component on-stop="mainCtrl.recordTime(startTime, endTime)"></timer-component>
+                    <timer-component ng-if="!mainCtrl.showEdit"
+                                     on-stop="mainCtrl.recordTime(startTime, endTime)">
+                    </timer-component>
+                    <edit-activity-component ng-if="mainCtrl.showEdit"
+                                             activity="mainCtrl.recordPendingSave"
+                                             on-save="mainCtrl.saveTime(activity)"
+                                             on-cancel="mainCtrl.discardActivity()">
+                    </edit-activity-component>
                 </div>
             </div>
         </div>

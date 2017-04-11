@@ -1,0 +1,39 @@
+<div class="card">
+    <div class="card-header">Edit and save</div>
+    <div class="card-block">
+        <div class="form-group row">
+            <label for="activity-type" class="col-4 col-form-label">Activity type: </label>
+            <div class="col-8">
+                <select class="form-control" id="activity-type" ng-model="editActivityCtrl.activity.activity" ng-options="value for value in editActivityCtrl.activityTypes"></select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="start-time">Start time</label>
+            <div class="col-8">
+                <input type="text" disabled class="form-control" id="start-time" value="{{ editActivityCtrl.activity.startTime | amDateFormat:'L LTS' }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="end-time">End time</label>
+            <div class="col-8">
+                <input type="text" id="end-time" disabled class="form-control" value="{{ editActivityCtrl.activity.endTime | amDateFormat:'L LTS' }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="duration">Duration</label>
+            <div class="col-8">
+                <input type="text" disabled class="form-control" id="duration" value="{{ editActivityCtrl.activity.duration | amDateFormat:'HH:mm:ss' }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-4 col-form-label" for="notes">Notes</label>
+            <div class="col-8">
+                <textarea rows="2" class="form-control" id="notes" ng-model="editActivityCtrl.activity.notes"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-secondary" ng-click="editActivityCtrl.onCancel()">Discard</button>
+        <button class="btn btn-primary" ng-click="editActivityCtrl.onSave({activity: editActivityCtrl.activity})">Save</button>
+    </div>
+</div>
