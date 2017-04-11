@@ -8,6 +8,7 @@
                     <td>Start time</td>
                     <td>Finish time</td>
                     <td>Duration</td>
+                    <td>Notes</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -16,6 +17,7 @@
                     <td>{{record.startTime | amDateFormat:'L LTS'}}</td>
                     <td>{{record.endTime | amDateFormat:'L LTS'}}</td>
                     <td>{{record.duration | amDateFormat:'HH:mm:ss'}}</td>
+                    <td>{{record.notes}}</td>
                 </tr>
                 <tr ng-if="recordTableCtrl.getRecords().length === 0">
                     <td colspan="3" class="text-xs-center">

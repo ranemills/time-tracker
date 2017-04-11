@@ -1,18 +1,38 @@
 'use strict';
 
 angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).controller('mainCtrl', function (recordService, activityService) {
+  var mainCtrl = this;
 
-  this.$onInit = function () {
+  mainCtrl.$onInit = function () {
     _.each(['Default', 'PR Review', 'Coding', 'Talking'], function (activity) {
       return activityService.addDefinedActivity(activity);
     });
+    mainCtrl.showEdit = false;
   };
 
-  this.recordTime = function (startTime, endTime) {
-    recordService.addRecord({ startTime: startTime, endTime: endTime, duration: endTime.diff(startTime), activity: activityService.getSelectedActivity() });
+  mainCtrl.saveTime = function () {
+    recordService.addRecord(mainCtrl.recordPendingSave);
+    mainCtrl.showEdit = false;
+    mainCtrl.recordPendingSave = null;
   };
 
-  this.getRecords = recordService.getRecords;
+  mainCtrl.recordTime = function (startTime, endTime) {
+    mainCtrl.showEdit = true;
+    mainCtrl.recordPendingSave = {
+      startTime: startTime,
+      endTime: endTime,
+      duration: endTime.diff(startTime),
+      activity: activityService.getSelectedActivity(),
+      note: ''
+    };
+  };
+
+  mainCtrl.discardActivity = function () {
+    mainCtrl.showEdit = false;
+    mainCtrl.recordPendingSave = null;
+  };
+
+  mainCtrl.getRecords = recordService.getRecords;
 }).constant('_', window._).service('activityService', function () {
 
   var selectedActivity = '';
@@ -210,6 +230,21 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).control
       this.isTiming = false;
       this.onStop({ startTime: this.startTime, endTime: this.endTime });
     }));
+  }
+}).component('editActivityComponent', {
+  templateUrl: 'components/edit-activity.html',
+  bindings: {
+    activity: '<',
+    onSave: '&',
+    onCancel: '&'
+  },
+  controllerAs: 'editActivityCtrl',
+  controller: function controller(activityService) {
+    var editActivityCtrl = this;
+
+    editActivityCtrl.$onInit = function () {
+      editActivityCtrl.activityTypes = activityService.getDefinedActivities();
+    };
   }
 });
 //# sourceMappingURL=app.js.map
