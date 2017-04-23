@@ -3,6 +3,46 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
   activityService.init();
   recordService.init();
 })
+// This run-block defines test-only functionality
+.run(function($rootScope, $window, testService, recordService) {
+  function testWrapper(fn) {
+    return function(params) {
+      if(testService.isTestMode()) {
+        fn(params);
+        $rootScope.$apply();
+      }
+      else {
+        _.identity();
+      }
+    }
+  }
+
+  $window.enableTestMode = testService.enableTestMode;
+  $window.addActivity = testWrapper(recordService.addRecord);
+})
+.service('testService', function () {
+
+  let testMode = false;
+
+  function enableTestMode() {
+    testMode = true;
+  }
+
+  function disableTestMode() {
+    testMode = false;
+  }
+
+  function isTestMode() {
+    return testMode;
+  }
+
+  return {
+    enableTestMode,
+    disableTestMode,
+    isTestMode
+  }
+
+})
 .controller('mainCtrl', function (recordService, activityService) {
   let mainCtrl = this;
 
