@@ -12,7 +12,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="record in recordTableCtrl.getRecords()">
+                <tr ng-repeat="record in recordTableCtrl.getRecords() track by $index">
                     <td>{{record.activity }}</td>
                     <td>{{record.startTime | amDateFormat:'L LTS'}}</td>
                     <td>{{record.endTime | amDateFormat:'L LTS'}}</td>
