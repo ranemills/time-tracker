@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).controller('mainCtrl', function (recordService, activityService) {
+angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).run(function (activityService, recordService) {
+  activityService.init();
+  recordService.init();
+}).controller('mainCtrl', function (recordService, activityService) {
   var mainCtrl = this;
 
   mainCtrl.$onInit = function () {
-    _.each(['Default', 'PR Review', 'Coding', 'Talking'], function (activity) {
-      return activityService.addDefinedActivity(activity);
-    });
     mainCtrl.showEdit = false;
   };
 
@@ -33,10 +33,15 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).control
   };
 
   mainCtrl.getRecords = recordService.getRecords;
-}).constant('_', window._).service('activityService', function () {
+}).constant('_', window._).service('activityService', function (storageService) {
+  var STORAGE_DEFINED_ACTIVITIES = "DEFINED_ACTIVITIES";
 
   var selectedActivity = '';
   var definedActivities = [];
+
+  function init() {
+    definedActivities = storageService.getValue(STORAGE_DEFINED_ACTIVITIES) || ['Default'];
+  }
 
   function getSelectedActivity() {
     return selectedActivity;
@@ -52,19 +57,26 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).control
 
   function addDefinedActivity(activity) {
     definedActivities.push(activity);
+    storageService.setValue(STORAGE_DEFINED_ACTIVITIES, definedActivities);
   }
 
   return {
+    init: init,
     getSelectedActivity: getSelectedActivity,
     setSelectedActivity: setSelectedActivity,
     getDefinedActivities: getDefinedActivities,
     addDefinedActivity: addDefinedActivity
   };
-}).service('recordService', function () {
+}).service('recordService', function (storageService) {
+  var STORAGE_RECORDED_ACTIVITIES = "RECORDED_ACTIVITIES";
 
   // Record format: { startDate, endDate, duration, activity }
 
   var records = [];
+
+  function init() {
+    records = storageService.getValue(STORAGE_RECORDED_ACTIVITIES) || [];
+  }
 
   function getRecords() {
     return records;
@@ -72,11 +84,32 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).control
 
   function addRecord(data) {
     records.push(data);
+    storageService.setValue(STORAGE_RECORDED_ACTIVITIES, records);
   }
 
   return {
+    init: init,
     getRecords: getRecords,
     addRecord: addRecord
+  };
+}).service('storageService', function (_, $window) {
+
+  function setValue(key, data) {
+    $window.localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  function getValue(key) {
+    return JSON.parse($window.localStorage.getItem(key));
+  }
+
+  function clear() {
+    $window.localStorage.clear();
+  }
+
+  return {
+    setValue: setValue,
+    getValue: getValue,
+    clear: clear
   };
 }).component('charts', {
   templateUrl: 'components/charts.html',
@@ -244,6 +277,18 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).control
 
     editActivityCtrl.$onInit = function () {
       editActivityCtrl.activityTypes = activityService.getDefinedActivities();
+    };
+  }
+}).component('settingsComponent', {
+  templateUrl: 'components/settings.html',
+  bindings: {},
+  controllerAs: 'settingsCtrl',
+  controller: function controller($window, storageService) {
+    var settingsCtrl = this;
+
+    settingsCtrl.clear = function () {
+      storageService.clear();
+      $window.location.reload();
     };
   }
 });

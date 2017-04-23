@@ -20,11 +20,11 @@
                 <div class="col-6">
                     <activity-selector></activity-selector>
                 </div>
-                <div class="col-6">
-                    <timer-component ng-if="!mainCtrl.showEdit"
+                <div class="col-6" ng-switch="mainCtrl.showEdit">
+                    <timer-component ng-switch-when="false"
                                      on-stop="mainCtrl.recordTime(startTime, endTime)">
                     </timer-component>
-                    <edit-activity-component ng-if="mainCtrl.showEdit"
+                    <edit-activity-component ng-switch-when="true"
                                              activity="mainCtrl.recordPendingSave"
                                              on-save="mainCtrl.saveTime(activity)"
                                              on-cancel="mainCtrl.discardActivity()">
@@ -41,6 +41,15 @@
         <div class="card-block">
             <charts records="mainCtrl.getRecords()"></charts>
             <record-table records="mainCtrl.getRecords()"></record-table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Settings
+        </div>
+        <div class="card-block">
+            <settings-component></settings-component>
         </div>
     </div>
 
