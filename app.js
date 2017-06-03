@@ -5,7 +5,7 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).run(fun
   recordService.init();
 })
 // This run-block defines test-only functionality
-.run(function ($rootScope, $window, testService, recordService) {
+.run(function ($rootScope, $window, demoDataService, testService, recordService) {
   function testWrapper(fn) {
     return function (params) {
       if (testService.isTestMode()) {
@@ -18,6 +18,8 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).run(fun
   }
 
   $window.enableTestMode = testService.enableTestMode;
+  $window.disableTestMode = testService.disableTestMode;
+  $window.addDemoData = testWrapper(demoDataService.addDemoData);
   $window.addActivity = testWrapper(recordService.addRecord);
 }).service('testService', function () {
 
@@ -39,6 +41,48 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js']).run(fun
     enableTestMode: enableTestMode,
     disableTestMode: disableTestMode,
     isTestMode: isTestMode
+  };
+}).service('demoDataService', function (activityService, recordService, settingsService, moment, _, $window) {
+
+  function addDemoData() {
+    settingsService.clearData();
+
+    var demoActivities = ['Coding', 'Meeting', 'Talking', 'Emails'];
+
+    _.each(demoActivities, function (activity) {
+      return activityService.addDefinedActivity(activity);
+    });
+
+    var startTime = moment('2017-05-01 09:00:00');
+    var endTime = moment('2017-05-01 17:30:00');
+
+    var currentTime = _.clone(startTime);
+
+    while (currentTime.isBefore(endTime)) {
+      var nextTime = currentTime.clone().add(_.random(5, 90), 'm');
+      recordService.addRecord({
+        startTime: currentTime,
+        endTime: nextTime,
+        duration: nextTime.diff(currentTime),
+        activity: _.sample(activityService.getDefinedActivities()),
+        note: ''
+      });
+      currentTime = nextTime;
+    }
+  }
+
+  return {
+    addDemoData: addDemoData
+  };
+}).service('settingsService', function (activityService, storageService, recordService) {
+  function clearData() {
+    storageService.clear();
+    activityService.init();
+    recordService.init();
+  }
+
+  return {
+    clearData: clearData
   };
 }).controller('mainCtrl', function (recordService, activityService) {
   var mainCtrl = this;

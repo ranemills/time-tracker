@@ -2,12 +2,12 @@
     <div class="row">
         <div class="col text-center">
             <span>
-                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.start()" ng-if="!timerCtrl.isTiming">
+                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.start()" ng-if="!timerCtrl.isTiming" id="start-timing-btn">
                     Start
                 </button>
             </span>
             <span>
-                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.stop()" ng-if="timerCtrl.isTiming">
+                <button class="btn btn-primary btn-lg" ng-click="timerCtrl.stop()" ng-if="timerCtrl.isTiming"  id="stop-timing-btn">
                     Stop
                 </button>
             </span>
