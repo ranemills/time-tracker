@@ -249,7 +249,7 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
     records: '<'
   },
   controllerAs: 'timePieChartCtrl',
-  controller: function() {
+  controller: function(chartingHelperService) {
     let timePieChartCtrl = this;
 
     timePieChartCtrl.$onInit = function() {
@@ -262,8 +262,13 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
         timePieChartCtrl.cachedRecords = _.clone(timePieChartCtrl.records);
 
         let data = _.transform(timePieChartCtrl.records, function(result, record) {
-          result[record.activity] = _.get(result, record.activity, 0) + record.duration/1000;
+          result[record.activity] = _.get(result, record.activity, 0) + record.duration;
         }, {});
+
+        let resultPair = chartingHelperService.scaleValues(data);
+
+        data = resultPair.values;
+        timePieChartCtrl.scaleLabel = resultPair.scaleLabel;
 
         if(_.size(data) !== 0) {
           timePieChartCtrl.labels = _.keys(data);
@@ -283,8 +288,10 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
     records: '<'
   },
   controllerAs: 'timeChartCtrl',
-  controller: function($scope, _) {
+  controller: function($scope, _, chartingHelperService) {
     let timeChartCtrl = this;
+
+    const yAxisPrefix = 'Time ';
 
     timeChartCtrl.$onInit = function() {
       timeChartCtrl.labels = ['All'];
@@ -294,6 +301,10 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
             display: true,
             ticks: {
               beginAtZero: true
+            },
+            scaleLabel: {
+              display: true,
+              labelString: yAxisPrefix
             }
           }]
         }
@@ -306,8 +317,14 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
         timeChartCtrl.cachedRecords = _.clone(timeChartCtrl.records);
 
         let data = _.transform(timeChartCtrl.records, function(result, record) {
-          result[record.activity] = _.get(result, record.activity, 0) + record.duration/1000;
+          result[record.activity] = _.get(result, record.activity, 0) + record.duration;
         }, {});
+
+        let resultPair = chartingHelperService.scaleValues(data);
+
+        data = resultPair.values;
+        timeChartCtrl.options.scales.yAxes[0].scaleLabel.labelString = yAxisPrefix + ' (' +resultPair.scaleLabel + ')';
+        timeChartCtrl.scaleLabel = resultPair.scaleLabel;
 
         if(_.size(data) !== 0) {
           timeChartCtrl.labels = _.keys(data);
@@ -318,7 +335,49 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
         }
       }
       return timeChartCtrl.cachedData;
+    };
+
+
+  }
+})
+.service('chartingHelperService', function() {
+
+  function scaleValues(map) {
+    // scaling algorithm. duration starts in milliseconds
+    let scalars = [
+      {label: 'seconds', value: 1000},
+      {label: 'minutes', value: 60},
+      {label: 'hours', value: 60},
+      {label: 'days', value: 24}
+    ]; // transform to seconds, minutes, hours, days cumulatively
+
+    let i = 0;
+    let max = _.max(_.values(map));
+    let scalar = 1;
+
+    while(max >= scalar)
+    {
+      let newScalar = scalar*scalars[i].value;
+      if(max <= newScalar) {
+        i--;
+        break;
+      }
+      else {
+        scalar = newScalar;
+        i++;
+      }
     }
+
+
+
+    return {
+      values: _.mapValues(map, (val) => _.round(val/scalar, 2)),
+      scaleLabel: scalars[i].label
+    }
+  }
+
+  return {
+    scaleValues
   }
 })
 .component('recordTable', {
