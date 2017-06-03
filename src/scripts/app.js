@@ -18,6 +18,7 @@ angular.module('timeTrackerApp', ['angularMoment', 'timer', 'chart.js'])
   }
 
   $window.enableTestMode = testService.enableTestMode;
+  $window.disableTestMode = testService.disableTestMode;
   $window.addActivity = testWrapper(recordService.addRecord);
 })
 .service('testService', function () {
